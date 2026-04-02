@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>الإنجازات - معهد جيل الأمة</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <script type="module" src="firebase-config.js"></script>
+</head>
+<body>
+    <header class="app-header">
+        <div class="header-content">
+            <div class="logo"><i class="fas fa-trophy"></i></div>
+            <div class="institute-name">
+                <h1>إنجازات المعهد</h1>
+                <p>أبرز إنجازات طلابنا</p>
+            </div>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <div id="achievementsList" class="achievements-grid">
+            <div class="loading"><div class="spinner"></div><p>جاري التحميل...</p></div>
+        </div>
+    </main>
+
+    <!-- Modal for achievement details -->
+    <div id="achievementModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle"></h3>
+                <button class="close-btn" onclick="closeModal()">&times;</button>
+            </div>
+            <div id="modalImages" style="display: flex; gap: 10px; overflow-x: auto; margin-bottom: 15px;"></div>
+            <p id="modalDescription"></p>
+            <div id="modalTags" style="display: flex; gap: 5px; flex-wrap: wrap; margin: 10px 0;"></div>
+            <div class="achievement-stats" style="margin-bottom: 15px;">
+                <span><i class="fas fa-heart"></i> <span id="modalLikes">0</span> إعجاب</span>
+                <span><i class="fas fa-comment"></i> <span id="modalCommentsCount">0</span> تعليق</span>
+            </div>
+            <div id="modalComments"></div>
+            <div class="comment-form">
+                <input type="text" id="commentName" class="form-input" placeholder="اسمك" style="margin-bottom: 10px;">
+                <textarea id="commentText" class="form-textarea" placeholder="اكتب تعليقك..." rows="3"></textarea>
+                <button id="submitCommentBtn" class="btn btn-primary" style="margin-top: 10px;">نشر التعليق</button>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { db, collection, getDocs, query, orderBy, addDoc, updateDoc, doc, arrayUnion, serverTimestamp } from './firebase-config.js';
+
+        let achievements = [];
+        let currentAchievement = null;
+
+        async function loadAchievements() {
+            const container = document.getElementById('achievementsList');
+            try {
+                const q = query(collection(db, "achievements"), orderBy("createdAt", "desc"));
+                const snapshot = await getDocs(q);
+                achievements = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                
+                if (achievements.length === 0) {
+                    container.innerHTML = '<div class="card" style="text-align: center;">لا توجد إنجازات حالياً</div>';
+                    return;
+                }
+                
+                container.innerHTML = '';
+                achievements.forEach(achievement => {
+                    container.innerHTML += `
+                        <div class="achievement-card" onclick="openAchievement('${achievement.id}')">
+                            ${achievement.images && achievement.images[0] ? 
+                                `<img src="${achievement.images[0].url}" class="achievement-image" alt="${achievement.title}">` :
+                                `<div class="achievement-image" style="background: linear-gradient(135deg, var(--primary-light), var(--primary)); display: flex; align-items: center; justify-content: center;">
+                                    <i class="fas fa-trophy" style="color: white; font-size: 3rem;"></i>
+                                </div>`}
+                            <div class="achievement-content">
+                                <h4 class="achievement-title">${achievement.title}</h4>
+                                <p class="achievement-desc">${achievement.description?.substring(0, 100) || ''}...</p>
+                                <div class="achievement-stats">
+                                    <span><i class="fas fa-heart"></i> ${achievement.likes || 0}</span>
+                                    <span><i class="fas fa-comment"></i> ${achievement.comments?.length || 0}</span>
+                                    <span><i class="fas fa-images"></i> ${achievement.images?.length || 0}</span>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+            } catch (error) {
+                console.error(error);
+                container.innerHTML = '<div class="card" style="text-align: center;">حدث خطأ في تحميل الإنجازات</div>';
+            }
+        }
+
+        window.openAchievement = (id) => {
+            currentAchievement = achievements.find(a => a.id === id);
+            if (!currentAchievement) return;
+            
+            document.getElementById('modalTitle').textContent = currentAchievement.title;
+            document.getElementById('modalDescription').textContent = currentAchievement.description;
+            document.getElementById('modalLikes').textContent = currentAchievement.likes || 0;
+            document.getElementById('modalCommentsCount').textContent = currentAchievement.comments?.length || 0;
+            
+            const imagesContainer = document.getElementById('modalImages');
+            imagesContainer.innerHTML = '';
+            if (currentAchievement.images) {
+                currentAchievement.images.forEach(img => {
+                    imagesContainer.innerHTML += `<img src="${img.url}" style="width: 150px; height: 100px; object-fit: cover; border-radius: 8px; cursor: pointer;" onclick="window.open('${img.url}', '_blank')">`;
+                });
+            }
+            
+            const tagsContainer = document.getElementById('modalTags');
+            tagsContainer.innerHTML = '';
+            if (currentAchievement.tags) {
+                currentAchievement.tags.forEach(tag => {
+                    tagsContainer.innerHTML += `<span class="achievement-tag">${tag}</span>`;
+                });
+            }
+            
+            const commentsContainer = document.getElementById('modalComments');
+            commentsContainer.innerHTML = '';
+            if (currentAchievement.comments && currentAchievement.comments.length > 0) {
+                currentAchievement.comments.forEach(comment => {
+                    commentsContainer.innerHTML += `
+                        <div class="comment-item">
+                            <div class="comment-user">${comment.user}</div>
+                            <div class="comment-text">${comment.comment}</div>
+                            <div class="comment-date">${new Date(comment.date).toLocaleDateString('ar-EG')}</div>
+                        </div>
+                    `;
+                });
+            } else {
+                commentsContainer.innerHTML = '<p style="text-align: center; color: #666;">لا توجد تعليقات</p>';
+            }
+            
+            document.getElementById('achievementModal').style.display = 'flex';
+        };
+
+        document.getElementById('submitCommentBtn').addEventListener('click', async () => {
+            const userName = document.getElementById('commentName').value.trim();
+            const commentText = document.getElementById('commentText').value.trim();
+            
+            if (!userName || !commentText) {
+                alert('الرجاء إدخال اسمك والتعليق');
+                return;
+            }
+            
+            if (!currentAchievement) return;
+            
+            const newComment = {
+                user: userName,
+                comment: commentText,
+                date: new Date().toISOString()
+            };
+            
+            const achievementRef = doc(db, "achievements", currentAchievement.id);
+            await updateDoc(achievementRef, {
+                comments: arrayUnion(newComment)
+            });
+            
+            document.getElementById('commentName').value = '';
+            document.getElementById('commentText').value = '';
+            
+            // إعادة تحميل البيانات
+            loadAchievements();
+            openAchievement(currentAchievement.id);
+        });
+
+        window.closeModal = () => {
+            document.getElementById('achievementModal').style.display = 'none';
+        };
+
+        loadAchievements();
+    </script>
+</body>
+  </html>
