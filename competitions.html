@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>المسابقات - معهد جيل الأمة</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <script type="module" src="firebase-config.js"></script>
+</head>
+<body>
+    <header class="app-header">
+        <div class="header-content">
+            <div class="logo"><i class="fas fa-award"></i></div>
+            <div class="institute-name">
+                <h1>المسابقات والفائزين</h1>
+                <p>مسابقاتنا الدورية وفائزينا المتميزين</p>
+            </div>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <div class="tabs" style="margin-bottom: 20px;">
+            <div class="tab active" data-filter="all">جميع المسابقات</div>
+            <div class="tab" data-filter="قادمة">القادمة</div>
+            <div class="tab" data-filter="جارية">الجارية</div>
+            <div class="tab" data-filter="منتهية">المنتهية</div>
+        </div>
+        
+        <div id="competitionsList" class="competitions-grid">
+            <div class="loading"><div class="spinner"></div><p>جاري التحميل...</p></div>
+        </div>
+    </main>
+
+    <script type="module">
+        import { db, collection, getDocs, query, orderBy } from './firebase-config.js';
+
+        let allCompetitions = [];
+
+        async function loadCompetitions(filter = 'all') {
+            const container = document.getElementById('competitionsList');
+            try {
+                const q = query(collection(db, "competitions"), orderBy("createdAt", "desc"));
+                const snapshot = await getDocs(q);
+                allCompetitions = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                
+                let filtered = allCompetitions;
+                if (filter !== 'all') {
+                    filtered = allCompetitions.filter(c => c.status === filter);
+                }
+                
+                if (filtered.length === 0) {
+                    container.innerHTML = '<div class="card" style="text-align: center;">لا توجد مسابقات</div>';
+                    return;
+                }
+                
+                container.innerHTML = '';
+                filtered.forEach(comp => {
+                    container.innerHTML += `
+                        <div class="competition-card">
+                            <div class="competition-header">
+                                <h4 class="competition-title">${comp.title}</h4>
+                                <span class="competition-status status-${comp.status === 'قادمة' ? 'upcoming' : (comp.status === 'جارية' ? 'ongoing' : 'finished')}">${comp.status}</span>
+                            </div>
+                            <p style="color: var(--text); margin-bottom: 10px;">${comp.description || ''}</p>
+                            <p style="color: #666; font-size: 0.85rem;"><i class="fas fa-calendar"></i> ${comp.date || ''} ${comp.endDate ? ` - ${comp.endDate}` : ''}</p>
+                            ${comp.location ? `<p style="color: #666; font-size: 0.85rem;"><i class="fas fa-map-marker-alt"></i> ${comp.location}</p>` : ''}
+                            ${comp.type ? `<p style="color: #666; font-size: 0.85rem;"><i class="fas fa-tag"></i> ${comp.type}</p>` : ''}
+                            
+                            <h4 style="margin-top: 15px; margin-bottom: 10px; color: var(--primary-dark);"><i class="fas fa-trophy"></i> الفائزون</h4>
+                            ${comp.winners && comp.winners.length > 0 ? 
+                                comp.winners.map(w => `
+                                    <div style="background: #f8f9fa; padding: 10px; border-radius: 8px; margin-bottom: 8px; border-right: 3px solid var(--secondary);">
+                                        <strong>${w.studentName}</strong> - ${w.position}
+                                        ${w.prize ? `<br><small>الجائزة: ${w.prize}</small>` : ''}
+                                    </div>
+                                `).join('') : 
+                                '<p style="color: #666; font-size: 0.85rem;">لم يتم الإعلان عن الفائزين بعد</p>'
+                            }
+                        </div>
+                    `;
+                });
+            } catch (error) {
+                console.error(error);
+                container.innerHTML = '<div class="card" style="text-align: center;">حدث خطأ في تحميل المسابقات</div>';
+            }
+        }
+
+        // Tabs
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                loadCompetitions(tab.dataset.filter);
+            });
+        });
+
+        loadCompetitions();
+    </script>
+</body>
+</html>
