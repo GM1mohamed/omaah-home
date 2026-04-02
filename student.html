@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ملفي - معهد جيل الأمة</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <script type="module" src="firebase-config.js"></script>
+</head>
+<body>
+    <header class="app-header">
+        <div class="header-content">
+            <div class="logo"><i class="fas fa-user-graduate"></i></div>
+            <div class="institute-name">
+                <h1>ملف الطالب</h1>
+                <p>معهد جيل الأمة</p>
+            </div>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <div class="student-info" id="studentInfo">
+            <img id="studentImage" src="" style="width: 100px; height: 100px; border-radius: 50%; object-fit: cover; margin-bottom: 15px;">
+            <h2 id="studentName"></h2>
+            <p>الكود: <span id="studentCode"></span></p>
+            <p>المستوى: <span id="studentLevel" class="level-badge"></span></p>
+        </div>
+
+        <div class="features-grid" style="grid-template-columns: repeat(2, 1fr); margin-bottom: 30px;">
+            <div class="card" style="text-align: center;"><i class="fas fa-book-open" style="font-size: 2rem; color: var(--primary);"></i><h3 id="lessonCount">0</h3><p>اختبارات الدروس</p></div>
+            <div class="card" style="text-align: center;"><i class="fas fa-quran" style="font-size: 2rem; color: var(--primary);"></i><h3 id="tajweedCount">0</h3><p>اختبارات التجويد</p></div>
+            <div class="card" style="text-align: center;"><i class="fas fa-brain" style="font-size: 2rem; color: var(--primary);"></i><h3 id="memorizationCount">0</h3><p>اختبارات الحفظ</p></div>
+            <div class="card" style="text-align: center;"><i class="fas fa-calendar-alt" style="font-size: 2rem; color: var(--primary);"></i><h3 id="totalPages">0</h3><p>إجمالي الصفحات</p></div>
+        </div>
+
+        <h3><i class="fas fa-clipboard-list"></i> اختبارات الدروس</h3>
+        <table class="data-table"><thead><tr><th>الدرس</th><th>النتيجة</th><th>التاريخ</th></tr></thead><tbody id="lessonTable"></tbody></table>
+
+        <h3><i class="fas fa-quran"></i> اختبارات التجويد</h3>
+        <table class="data-table"><thead><tr><th>الاختبار</th><th>النتيجة</th><th>التاريخ</th></tr></thead><tbody id="tajweedTable"></tbody></table>
+
+        <h3><i class="fas fa-brain"></i> اختبارات الحفظ</h3>
+        <table class="data-table"><thead><tr><th>الاختبار</th><th>النتيجة</th><th>التاريخ</th></tr></thead><tbody id="memorizationTable"></tbody></table>
+
+        <h3><i class="fas fa-calendar-alt"></i> الصفحات الشهرية</h3>
+        <table class="data-table"><thead><tr><th>الشهر</th><th>السنة</th><th>الصفحات</th><th>الهدف</th></tr></thead><tbody id="pagesTable"></tbody></table>
+
+        <button id="logoutBtn" class="btn btn-danger" style="width: 100%; margin-top: 20px;"><i class="fas fa-sign-out-alt"></i> تسجيل الخروج</button>
+    </main>
+
+    <script type="module">
+        import { db, doc, getDoc } from './firebase-config.js';
+
+        const monthNames = ['يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو', 'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر'];
+
+        function getRatingClass(score) {
+            if (score >= 90) return 'rating-excellent';
+            if (score >= 80) return 'rating-very-good';
+            if (score >= 70) return 'rating-good';
+            if (score >= 60) return 'rating-average';
+            return 'rating-weak';
+        }
+
+        async function loadStudentData() {
+            const studentData = localStorage.getItem('currentStudent');
+            if (!studentData) {
+                window.location.href = 'index.html';
+                return;
+            }
+            
+            const student = JSON.parse(studentData);
+            const studentRef = doc(db, "students", student.id);
+            const studentDoc = await getDoc(studentRef);
+            
+            if (!studentDoc.exists()) {
+                localStorage.removeItem('currentStudent');
+                window.location.href = 'index.html';
+                return;
+            }
+            
+            const data = studentDoc.data();
+            
+            document.getElementById('studentName').textContent = data.name;
+            document.getElementById('studentCode').textContent = data.code;
+            document.getElementById('studentLevel').textContent = data.overallLevel || 'غير محدد';
+            if (data.imageUrl) document.getElementById('studentImage').src = data.imageUrl;
+            
+            document.getElementById('lessonCount').textContent = data.lessonTests?.length || 0;
+            document.getElementById('tajweedCount').textContent = data.tajweedTests?.length || 0;
+            document.getElementById('memorizationCount').textContent = data.memorizationTests?.length || 0;
+            
+            let totalPages = 0;
+            (data.monthlyPages || []).forEach(p => totalPages += p.pages || 0);
+            document.getElementById('totalPages').textContent = totalPages;
+            
+            const lessonTable = document.getElementById('lessonTable');
+            (data.lessonTests || []).sort((a,b) => new Date(b.date) - new Date(a.date)).forEach(test => {
+                lessonTable.innerHTML += `<tr><td>${test.testName}</td><td><span class="rating-cell ${getRatingClass(test.result)}">${test.result}%</span></td><td>${test.date}</td></tr>`;
+            });
+            if ((data.lessonTests || []).length === 0) lessonTable.innerHTML = '<tr><td colspan="3">لا توجد اختبارات</td></tr>';
+            
+            const tajweedTable = document.getElementById('tajweedTable');
+            (data.tajweedTests || []).sort((a,b) => new Date(b.date) - new Date(a.date)).forEach(test => {
+                tajweedTable.innerHTML += `<tr><td>${test.testName}</td><td><span class="rating-cell ${getRatingClass(test.result)}">${test.result}%</span></td><td>${test.date}</td></tr>`;
+            });
+            if ((data.tajweedTests || []).length === 0) tajweedTable.innerHTML = '<tr><td colspan="3">لا توجد اختبارات</td></tr>';
+            
+            const memorizationTable = document.getElementById('memorizationTable');
+            (data.memorizationTests || []).sort((a,b) => new Date(b.date) - new Date(a.date)).forEach(test => {
+                memorizationTable.innerHTML += `<tr><td>${test.testName}</td><td><span class="rating-cell ${getRatingClass(test.result)}">${test.result}%</span></td><td>${test.date}</td></tr>`;
+            });
+            if ((data.memorizationTests || []).length === 0) memorizationTable.innerHTML = '<tr><td colspan="3">لا توجد اختبارات</td></tr>';
+            
+            const pagesTable = document.getElementById('pagesTable');
+            (data.monthlyPages || []).sort((a,b) => b.year - a.year || b.month - a.month).forEach(p => {
+                pagesTable.innerHTML += `<tr><td>${monthNames[p.month - 1]}</td><td>${p.year}</td><td>${p.pages}</td><td>${p.goal || 20}</td></tr>`;
+            });
+            if ((data.monthlyPages || []).length === 0) pagesTable.innerHTML = '<tr><td colspan="4">لا توجد بيانات</td></tr>';
+        }
+        
+        document.getElementById('logoutBtn').addEventListener('click', () => {
+            localStorage.removeItem('currentStudent');
+            window.location.href = 'index.html';
+        });
+        
+        loadStudentData();
+    </script>
+</body>
+          </html>
