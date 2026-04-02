@@ -1,0 +1,1718 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>معهد جيل الأمة</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #2c786c;
+            --primary-dark: #1a4d44;
+            --primary-light: #57a895;
+            --secondary: #f8b400;
+            --secondary-dark: #e6a200;
+            --accent: #004445;
+            --light: #faf5e4;
+            --white: #ffffff;
+            --gray: #f5f5f5;
+            --dark: #333333;
+            --text: #444444;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            --radius: 16px;
+            --transition: all 0.3s ease;
+            --success: #2e7d32;
+            --error: #c62828;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background: var(--white);
+            color: var(--dark);
+            line-height: 1.6;
+            overflow-x: hidden;
+            position: relative;
+            min-height: 100vh;
+            padding-bottom: 70px;
+        }
+
+        /* Floating Announcement Banner */
+        .announcement-banner {
+            position: fixed;
+            bottom: 80px;
+            right: 20px;
+            left: 20px;
+            background: linear-gradient(135deg, #4CAF50, #2E7D32);
+            color: var(--white);
+            padding: 12px 16px;
+            z-index: 1001;
+            display: none;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            border-radius: 16px;
+            max-width: 500px;
+            margin: 0 auto;
+            animation: slideUpFade 0.5s ease-out;
+            border: 2px solid rgba(255,255,255,0.2);
+        }
+
+        @keyframes slideUpFade {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .announcement-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        .announcement-text {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .announcement-icon {
+            font-size: 1rem;
+            animation: pulse 2s infinite;
+            background: rgba(255,255,255,0.2);
+            padding: 8px;
+            border-radius: 50%;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+                box-shadow: 0 0 0 0 rgba(255,255,255,0.4);
+            }
+            70% {
+                transform: scale(1.05);
+                box-shadow: 0 0 0 10px rgba(255,255,255,0);
+            }
+            100% {
+                transform: scale(1);
+                box-shadow: 0 0 0 0 rgba(255,255,255,0);
+            }
+        }
+
+        .announcement-link {
+            color: var(--white);
+            text-decoration: none;
+            font-weight: 600;
+            padding: 8px 16px;
+            background: rgba(255,255,255,0.25);
+            border-radius: 12px;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.85rem;
+            flex-shrink: 0;
+            border: 1px solid rgba(255,255,255,0.3);
+        }
+
+        .announcement-link:hover {
+            background: rgba(255,255,255,0.35);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+
+        .close-announcement {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: var(--white);
+            font-size: 0.9rem;
+            cursor: pointer;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: var(--transition);
+            flex-shrink: 0;
+        }
+
+        .close-announcement:hover {
+            background: rgba(255,255,255,0.3);
+            transform: rotate(90deg);
+        }
+
+        /* Header - FIXED POSITION */
+        .app-header {
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: var(--white);
+            padding: 15px 20px;
+            position: fixed;
+            top: 0;
+            right: 0;
+            left: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: var(--transition);
+        }
+
+        .header-content {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            width: 100%;
+        }
+
+        .logo {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            background: rgba(255,255,255,0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            flex-shrink: 0;
+            color: var(--white);
+        }
+
+        .institute-name {
+            flex: 1;
+        }
+
+        .institute-name h1 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .institute-name p {
+            font-size: 0.8rem;
+            opacity: 0.9;
+            margin: 0;
+        }
+
+        .welcome-text {
+            font-size: 0.8rem;
+            opacity: 0.9;
+            margin-top: 2px;
+            font-weight: 600;
+            color: rgba(255,255,255,0.9);
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-top: 60px;
+            padding: 0 0 80px 0;
+            transition: var(--transition);
+        }
+
+        /* Sections */
+        .section {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Hero Section */
+        .hero-section {
+            background: linear-gradient(135deg, var(--primary-light), var(--primary));
+            color: var(--white);
+            padding: 40px 20px;
+            text-align: center;
+            border-radius: 0 0 30px 30px;
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 200px;
+            height: 200px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+            transform: translate(50%, -50%);
+        }
+
+        .hero-section::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 150px;
+            height: 150px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+            transform: translate(-50%, 50%);
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-title {
+            font-size: 1.8rem;
+            font-weight: 800;
+            margin-bottom: 10px;
+            color: var(--white);
+        }
+
+        .hero-subtitle {
+            font-size: 1rem;
+            opacity: 0.9;
+            margin-bottom: 30px;
+        }
+
+        /* Login Card */
+        .login-card {
+            background: var(--white);
+            border-radius: var(--radius);
+            padding: 25px 20px;
+            margin: 0 20px;
+            box-shadow: var(--shadow);
+            position: relative;
+            z-index: 1;
+            transform: translateY(-20px);
+        }
+
+        .login-title {
+            color: var(--primary-dark);
+            text-align: center;
+            margin-bottom: 25px;
+            font-size: 1.3rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--primary-dark);
+            font-size: 0.95rem;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            font-family: 'Tajawal', sans-serif;
+            font-size: 16px;
+            transition: var(--transition);
+            background: var(--white);
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(44, 120, 108, 0.1);
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: var(--white);
+            border: none;
+            border-radius: 12px;
+            font-family: 'Tajawal', sans-serif;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(44, 120, 108, 0.3);
+        }
+
+        .logout-btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #f44336, #d32f2f);
+            color: var(--white);
+            border: none;
+            border-radius: 12px;
+            font-family: 'Tajawal', sans-serif;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .logout-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(244, 67, 54, 0.3);
+        }
+
+        .profile-btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #4CAF50, #2E7D32);
+            color: var(--white);
+            border: none;
+            border-radius: 12px;
+            font-family: 'Tajawal', sans-serif;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .profile-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(76, 175, 80, 0.3);
+        }
+
+        .button-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .student-info {
+            background: #e8f5e9;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-right: 4px solid var(--success);
+        }
+
+        .student-info h4 {
+            color: var(--success);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .student-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            font-size: 0.9rem;
+        }
+
+        .student-detail {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .student-detail .label {
+            color: #666;
+            font-size: 0.8rem;
+            margin-bottom: 2px;
+        }
+
+        .student-detail .value {
+            color: var(--primary-dark);
+            font-weight: 600;
+        }
+
+        /* Features Grid */
+        .features-grid {
+            padding: 20px;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .feature-card {
+            background: var(--white);
+            border-radius: var(--radius);
+            padding: 20px;
+            text-align: center;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .feature-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--primary-light), var(--primary));
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px;
+            color: var(--white);
+            font-size: 1.5rem;
+        }
+
+        .feature-title {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: var(--primary-dark);
+            margin-bottom: 5px;
+        }
+
+        .feature-desc {
+            font-size: 0.85rem;
+            color: var(--text);
+            opacity: 0.8;
+        }
+
+        /* Achievements Section */
+        .achievements-section {
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .section-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--primary-dark);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .view-all {
+            color: var(--primary);
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            cursor: pointer;
+        }
+
+        .achievements-carousel {
+            display: flex;
+            gap: 15px;
+            overflow-x: auto;
+            padding: 10px 0;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+
+        .achievements-carousel::-webkit-scrollbar {
+            display: none;
+        }
+
+        .achievement-card {
+            flex: 0 0 280px;
+            background: var(--white);
+            border-radius: var(--radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            cursor: pointer;
+        }
+
+        .achievement-image {
+            width: 100%;
+            height: 160px;
+            background: linear-gradient(135deg, var(--primary-light), var(--primary));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 3rem;
+        }
+
+        .achievement-content {
+            padding: 15px;
+        }
+
+        .achievement-title {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--primary-dark);
+            margin-bottom: 8px;
+        }
+
+        .achievement-desc {
+            font-size: 0.85rem;
+            color: var(--text);
+            line-height: 1.5;
+            margin-bottom: 10px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .achievement-stats {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: var(--text);
+            font-size: 0.8rem;
+            padding-top: 10px;
+            border-top: 1px solid #f0f0f0;
+        }
+
+        /* Competitions Section */
+        .competitions-section {
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+
+        .competition-card {
+            background: var(--white);
+            border-radius: var(--radius);
+            padding: 20px;
+            margin-bottom: 15px;
+            box-shadow: var(--shadow);
+            border-right: 4px solid var(--secondary);
+        }
+
+        .competition-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 15px;
+        }
+
+        .competition-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--primary-dark);
+            flex: 1;
+        }
+
+        .competition-status {
+            background: var(--light);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .competition-status.upcoming {
+            background: #e3f2fd;
+            color: #1976d2;
+        }
+
+        .competition-status.ongoing {
+            background: #fff3e0;
+            color: #f57c00;
+        }
+
+        .competition-details {
+            color: var(--text);
+            font-size: 0.9rem;
+            margin-bottom: 15px;
+        }
+
+        .competition-btn {
+            display: block;
+            text-align: center;
+            background: var(--secondary);
+            color: var(--white);
+            text-decoration: none;
+            padding: 12px;
+            border-radius: 10px;
+            font-weight: 600;
+            transition: var(--transition);
+        }
+
+        .competition-btn:hover {
+            background: var(--secondary-dark);
+            transform: translateY(-2px);
+        }
+
+        /* About Section */
+        .about-section {
+            background: var(--light);
+            padding: 40px 20px;
+            margin: 30px 0;
+        }
+
+        .about-content {
+            max-width: 600px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .about-title {
+            color: var(--primary-dark);
+            font-size: 1.5rem;
+            font-weight: 800;
+            margin-bottom: 20px;
+        }
+
+        .about-text {
+            color: var(--text);
+            line-height: 1.8;
+            margin-bottom: 20px;
+            font-size: 0.95rem;
+        }
+
+        .about-features {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .about-feature {
+            text-align: center;
+        }
+
+        .about-feature i {
+            font-size: 2rem;
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+
+        .about-feature h4 {
+            color: var(--primary-dark);
+            margin-bottom: 5px;
+        }
+
+        .about-feature p {
+            color: var(--text);
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        /* Contact Section */
+        .contact-section {
+            padding: 40px 20px;
+        }
+
+        .contact-title {
+            color: var(--primary-dark);
+            font-size: 1.5rem;
+            font-weight: 800;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .contact-info {
+            background: var(--white);
+            border-radius: var(--radius);
+            padding: 25px;
+            box-shadow: var(--shadow);
+            margin-bottom: 20px;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .contact-item:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+
+        .contact-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--primary-light), var(--primary));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--white);
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+
+        .contact-details h4 {
+            color: var(--primary-dark);
+            margin-bottom: 5px;
+            font-size: 1rem;
+        }
+
+        .contact-details p {
+            color: var(--text);
+            font-size: 0.95rem;
+        }
+
+        /* Tags */
+        .achievement-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            margin: 10px 0;
+        }
+
+        .achievement-tag {
+            background: rgba(44, 120, 108, 0.1);
+            color: var(--primary);
+            padding: 4px 10px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        /* Navigation Bar */
+        .mobile-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--white);
+            border-top: 1px solid #e0e0e0;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: var(--text);
+            flex: 1;
+            padding: 8px 0;
+            border-radius: 10px;
+            transition: var(--transition);
+            cursor: pointer;
+        }
+
+        .nav-item.active {
+            color: var(--primary);
+            background: rgba(44, 120, 108, 0.05);
+        }
+
+        .nav-item:hover {
+            background: rgba(44, 120, 108, 0.05);
+        }
+
+        .nav-icon {
+            font-size: 1.2rem;
+            margin-bottom: 4px;
+        }
+
+        .nav-label {
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+
+        /* Messages */
+        .message {
+            padding: 12px;
+            border-radius: 10px;
+            margin: 15px 0;
+            display: none;
+            animation: slideIn 0.3s ease;
+        }
+
+        .message.error {
+            background: #ffebee;
+            color: var(--error);
+            border: 1px solid #ffcdd2;
+        }
+
+        .message.success {
+            background: #e8f5e9;
+            color: var(--success);
+            border: 1px solid #c8e6c9;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Loading */
+        .loading {
+            text-align: center;
+            padding: 20px;
+        }
+
+        .spinner {
+            width: 30px;
+            height: 30px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Scroll to top button */
+        .scroll-top {
+            position: fixed;
+            bottom: 80px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            background: var(--primary);
+            color: var(--white);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            cursor: pointer;
+            opacity: 0;
+            visibility: hidden;
+            transition: var(--transition);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            z-index: 999;
+        }
+
+        .scroll-top.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* Responsive */
+        @media (min-width: 768px) {
+            .main-content {
+                max-width: 500px;
+                margin: 60px auto 0;
+                padding-bottom: 80px;
+            }
+            
+            .announcement-banner {
+                right: 50%;
+                transform: translateX(50%);
+                max-width: 400px;
+            }
+            
+            .features-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .about-features {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .mobile-nav {
+                max-width: 500px;
+                left: 50%;
+                transform: translateX(-50%);
+            }
+        }
+
+        @media (max-width: 767px) {
+            .announcement-banner {
+                bottom: 70px;
+                margin: 0 10px;
+            }
+            
+            .scroll-top {
+                bottom: 130px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .announcement-content {
+                flex-direction: column;
+                gap: 8px;
+            }
+            
+            .announcement-text {
+                font-size: 0.8rem;
+            }
+            
+            .announcement-link {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .close-announcement {
+                position: absolute;
+                top: 8px;
+                left: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header - Fixed Position -->
+    <header class="app-header" id="mainHeader">
+        <div class="header-content">
+            <div class="logo">
+                <i class="fas fa-quran"></i>
+            </div>
+            <div class="institute-name">
+                <h1>معهد جيل الأمة</h1>
+                <p>نور العلم والإيمان</p>
+                <p id="welcomeText" class="welcome-text" style="display: none;"></p>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Home Section -->
+        <section id="home" class="section active">
+            <!-- Hero Section -->
+            <div class="hero-section">
+                <div class="hero-content">
+                    <h2 class="hero-title">مرحباً بكم في معهد جيل الأمة</h2>
+                    <p class="hero-subtitle">معهد متخصص في تعليم القرآن الكريم والعلوم الشرعية</p>
+                </div>
+            </div>
+
+            <!-- Login Card -->
+            <div class="login-card">
+                <h3 class="login-title">
+                    <i class="fas fa-user-graduate"></i>
+                    <span id="loginTitle">تسجيل دخول الطالب</span>
+                </h3>
+                
+                <div id="studentInfo" class="student-info" style="display: none;">
+                    <h4><i class="fas fa-user-circle"></i> معلومات الطالب</h4>
+                    <div class="student-details">
+                        <div class="student-detail">
+                            <span class="label">الاسم</span>
+                            <span id="studentNameDisplay" class="value"></span>
+                        </div>
+                        <div class="student-detail">
+                            <span class="label">الكود</span>
+                            <span id="studentCodeDisplay" class="value"></span>
+                        </div>
+                        <div class="student-detail">
+                            <span class="label">المستوى</span>
+                            <span id="studentLevelDisplay" class="value"></span>
+                        </div>
+                        <div class="student-detail">
+                            <span class="label">آخر دخول</span>
+                            <span id="lastLoginDisplay" class="value"></span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="loginForm">
+                    <div class="form-group">
+                        <label for="studentCode" class="form-label">كود الدخول</label>
+                        <input type="text" id="studentCode" class="form-input" 
+                               placeholder="أدخل الكود المكون من 6 أرقام" 
+                               maxlength="6" 
+                               inputmode="numeric">
+                    </div>
+                    
+                    <button id="loginBtn" class="login-btn">
+                        <i class="fas fa-sign-in-alt"></i>
+                        دخول
+                    </button>
+                </div>
+                
+                <div id="loggedInButtons" class="button-group" style="display: none;">
+                    <button id="profileBtn" class="profile-btn">
+                        <i class="fas fa-user"></i>
+                        الصفحة الشخصية
+                    </button>
+                    <button id="logoutBtn" class="logout-btn">
+                        <i class="fas fa-sign-out-alt"></i>
+                        تسجيل الخروج
+                    </button>
+                </div>
+                
+                <div id="loginMessage" class="message"></div>
+                <div id="loginLoading" class="loading" style="display: none;">
+                    <div class="spinner"></div>
+                    <p>جاري تسجيل الدخول...</p>
+                </div>
+            </div>
+
+            <!-- Features Grid -->
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-quran"></i>
+                    </div>
+                    <h4 class="feature-title">حفظ القرآن</h4>
+                    <p class="feature-desc">برامج متخصصة لحفظ كتاب الله</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-user-tie"></i>
+                    </div>
+                    <h4 class="feature-title">مدرسين متخصصين</h4>
+                    <p class="feature-desc">كفاءات علمية متخصصة</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-trophy"></i>
+                    </div>
+                    <h4 class="feature-title">مسابقات دائمة</h4>
+                    <p class="feature-desc">تحفيز الطلاب بالإنجازات</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h4 class="feature-title">متابعة مستمرة</h4>
+                    <p class="feature-desc">تقارير وتقييم دوري</p>
+                </div>
+            </div>
+
+            <!-- Latest Achievements -->
+            <div class="achievements-section">
+                <div class="section-header">
+                    <h3 class="section-title">
+                        <i class="fas fa-trophy"></i>
+                        أحدث الإنجازات
+                    </h3>
+                    <a href="javascript:void(0)" class="view-all" onclick="window.location.href='achievements.html'">
+                        عرض الكل
+                        <i class="fas fa-arrow-left"></i>
+                    </a>
+                </div>
+                
+                <div id="achievementsCarousel" class="achievements-carousel">
+                    <div class="loading" style="padding: 40px 0;">
+                        <div class="spinner"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Latest Competitions -->
+            <div class="competitions-section">
+                <div class="section-header">
+                    <h3 class="section-title">
+                        <i class="fas fa-award"></i>
+                        المسابقات الحالية
+                    </h3>
+                    <a href="javascript:void(0)" class="view-all" onclick="window.location.href='competitions.html'">
+                        عرض الكل
+                        <i class="fas fa-arrow-left"></i>
+                    </a>
+                </div>
+                
+                <div id="competitionsList">
+                    <div class="loading" style="padding: 40px 0;">
+                        <div class="spinner"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- About Section -->
+        <section id="about" class="section">
+            <div class="about-section">
+                <div class="about-content">
+                    <h3 class="about-title">عن معهد جيل الأمة</h3>
+                    
+                    <div class="about-text">
+                        <p>معهد جيل الأمة هو مؤسسة تعليمية متخصصة في تعليم القرآن الكريم والعلوم الشرعية، 
+                        نسعى لتربية جيل يحمل هم الإسلام ويعمل على خدمة القرآن والسنة.</p>
+                        
+                        <p>نقدم برامج متخصصة في حفظ القرآن الكريم وفهمه، مع التركيز على التلاوة الصحيحة 
+                        والتجويد المتقن، تحت إشراف مدرسين متخصصين وذوي خبرة.</p>
+                    </div>
+                    
+                    <div class="about-features">
+                        <div class="about-feature">
+                            <i class="fas fa-book-open"></i>
+                            <h4>مناهج قوية</h4>
+                            <p>مناهج دراسية قوية</p>
+                        </div>
+                        
+                        <div class="about-feature">
+                            <i class="fas fa-users"></i>
+                            <h4>فصول منظمة</h4>
+                            <p>فصول حسب المستويات</p>
+                        </div>
+                        
+                        <div class="about-feature">
+                            <i class="fas fa-calendar-alt"></i>
+                            <h4>برامج منتظمة</h4>
+                            <p>برامج دراسية منتظمة</p>
+                        </div>
+                        
+                        <div class="about-feature">
+                            <i class="fas fa-chart-bar"></i>
+                            <h4>تقييم مستمر</h4>
+                            <p>متابعة وتقييم دوري</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Our Vision -->
+            <div class="achievements-section">
+                <h3 class="section-title" style="padding: 20px 20px 0 20px;">
+                    <i class="fas fa-eye"></i>
+                    رؤيتنا
+                </h3>
+                <div class="competition-card">
+                    <p>الريادة في تعليم القرآن الكريم والعلوم الشرعية، وإعداد جيل قرآني يحمل هم الإسلام، 
+                    ويساهم في بناء المجتمع وفق المنهج الإسلامي الصحيح.</p>
+                </div>
+            </div>
+            
+            <!-- Our Mission -->
+            <div class="achievements-section">
+                <h3 class="section-title" style="padding: 20px 20px 0 20px;">
+                    <i class="fas fa-bullseye"></i>
+                    رسالتنا
+                </h3>
+                <div class="competition-card">
+                    <p>توفير بيئة تعليمية متميزة تحفظ القرآن الكريم، وتعلم علومه، وتربي على أخلاقه، 
+                    من خلال كفاءات علمية متخصصة وبرامج تعليمية متطورة.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact Section -->
+        <section id="contact" class="section">
+            <div class="contact-section">
+                <h3 class="contact-title">اتصل بنا</h3>
+                
+                <div class="contact-info">
+                    <div class="contact-item">
+                        <div class="contact-icon">
+                            <i class="fas fa-map-marker-alt"></i>
+                        </div>
+                        <div class="contact-details">
+                            <h4>العنوان</h4>
+                            <p>مارع وسط الشارع العريض</p>
+                        </div>
+                    </div>
+                    
+                    <div class="contact-item">
+                        <div class="contact-icon">
+                            <i class="fas fa-phone"></i>
+                        </div>
+                        <div class="contact-details">
+                            <h4>هاتف المعهد</h4>
+                            <p>963940585411+</p>
+                        </div>
+                    </div>
+                    
+                    <div class="contact-item">
+                        <div class="contact-icon">
+                            <i class="fas fa-envelope"></i>
+                        </div>
+                        <div class="contact-details">
+                            <h4>البريد الإلكتروني</h4>
+                            <p>bdalqadrahmdhythm@gmail.com</p>
+                        </div>
+                    </div>
+                    
+                    <div class="contact-item">
+                        <div class="contact-icon">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div class="contact-details">
+                            <h4>أيام الدوام</h4>
+                            <p>من الأحد حتى الخميس</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Contact Form -->
+                <div class="login-card">
+                    <h3 class="login-title">
+                        <i class="fas fa-paper-plane"></i>
+                        أرسل رسالة
+                    </h3>
+                    
+                    <div class="form-group">
+                        <label for="contactName" class="form-label">الاسم الكامل</label>
+                        <input type="text" id="contactName" class="form-input" placeholder="أدخل اسمك">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="contactEmail" class="form-label">البريد الإلكتروني</label>
+                        <input type="email" id="contactEmail" class="form-input" placeholder="أدخل بريدك الإلكتروني">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="contactMessage" class="form-label">الرسالة</label>
+                        <textarea id="contactMessage" class="form-input" rows="4" placeholder="اكتب رسالتك هنا..."></textarea>
+                    </div>
+                    
+                    <button id="sendMessageBtn" class="login-btn">
+                        <i class="fas fa-paper-plane"></i>
+                        إرسال الرسالة
+                    </button>
+                    
+                    <div id="contactMessageStatus" class="message"></div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Announcement Banner -->
+    <div class="announcement-banner" id="announcementBanner">
+        <div class="announcement-content">
+            <div class="announcement-text">
+                <i class="fas fa-mobile-alt announcement-icon"></i>
+                <span>حمل تطبيق القرآن حياة لمساعدتك على قراءة القرآن</span>
+            </div>
+            <a href="https://app3556480-zxv.en.uptodown.com/android" 
+               target="_blank" 
+               class="announcement-link"
+               onclick="openExternalApp()">
+                <i class="fas fa-download"></i>
+                حمل الآن
+            </a>
+            <button class="close-announcement" onclick="closeAnnouncement()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Mobile Navigation -->
+    <nav class="mobile-nav">
+        <div class="nav-item active" onclick="showSection('home')">
+            <i class="fas fa-home nav-icon"></i>
+            <span class="nav-label">الرئيسية</span>
+        </div>
+        <div class="nav-item" onclick="window.location.href='achievements.html'">
+            <i class="fas fa-trophy nav-icon"></i>
+            <span class="nav-label">الإنجازات</span>
+        </div>
+        <div class="nav-item" onclick="window.location.href='competitions.html'">
+            <i class="fas fa-award nav-icon"></i>
+            <span class="nav-label">المسابقات</span>
+        </div>
+        <div class="nav-item" onclick="showSection('about')">
+            <i class="fas fa-info-circle nav-icon"></i>
+            <span class="nav-label">عن المعهد</span>
+        </div>
+        <div class="nav-item" onclick="showSection('contact')">
+            <i class="fas fa-phone nav-icon"></i>
+            <span class="nav-label">اتصل بنا</span>
+        </div>
+    </nav>
+
+    <!-- Scroll to Top Button -->
+    <div class="scroll-top" onclick="scrollToTop()">
+        <i class="fas fa-arrow-up"></i>
+    </div>
+
+    <script type="module">
+        import { db, collection, getDocs, query, orderBy, limit, where } from './firebase-config.js';
+
+        let currentStudent = null;
+
+        // تحميل الإنجازات
+        async function loadAchievements() {
+            const carousel = document.getElementById('achievementsCarousel');
+
+            try {
+                const q = query(collection(db, "achievements"), orderBy("createdAt", "desc"), limit(3));
+                const snapshot = await getDocs(q);
+                const achievements = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                
+                if (achievements.length === 0) {
+                    carousel.innerHTML = `
+                        <div class="achievement-card" style="text-align: center; padding: 40px 20px;">
+                            <i class="fas fa-trophy" style="font-size: 3rem; color: #e0e0e0; margin-bottom: 15px;"></i>
+                            <p style="color: var(--text);">لا توجد إنجازات حالياً</p>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                carousel.innerHTML = achievements.map(achievement => `
+                    <div class="achievement-card" onclick="window.location.href='achievements.html'">
+                        <div class="achievement-image">
+                            <i class="fas fa-trophy"></i>
+                        </div>
+                        <div class="achievement-content">
+                            <h4 class="achievement-title">${achievement.title}</h4>
+                            <p class="achievement-desc">${achievement.description?.substring(0, 100) || ''}...</p>
+                            <div class="achievement-stats">
+                                <span><i class="fas fa-heart"></i> ${achievement.likes || 0}</span>
+                                <span><i class="fas fa-comment"></i> ${achievement.comments?.length || 0}</span>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+
+            } catch (error) {
+                console.error(error);
+                carousel.innerHTML = `
+                    <div class="achievement-card" style="text-align: center; padding: 40px 20px;">
+                        <i class="fas fa-exclamation-triangle" style="font-size: 3rem; color: #ff9800; margin-bottom: 15px;"></i>
+                        <p style="color: var(--text);">حدث خطأ في تحميل الإنجازات</p>
+                    </div>
+                `;
+            }
+        }
+
+        // تحميل المسابقات
+        async function loadCompetitions() {
+            const container = document.getElementById('competitionsList');
+
+            try {
+                const q = query(collection(db, "competitions"), orderBy("createdAt", "desc"), limit(2));
+                const snapshot = await getDocs(q);
+                const competitions = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+
+                if (competitions.length === 0) {
+                    container.innerHTML = `
+                        <div class="competition-card" style="text-align: center; padding: 40px 20px;">
+                            <i class="fas fa-award" style="font-size: 3rem; color: #e0e0e0; margin-bottom: 15px;"></i>
+                            <p style="color: var(--text);">لا توجد مسابقات حالياً</p>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                container.innerHTML = competitions.map(competition => `
+                    <div class="competition-card" onclick="window.location.href='competitions.html'">
+                        <div class="competition-header">
+                            <h4 class="competition-title">${competition.title}</h4>
+                            <span class="competition-status ${competition.status === 'قادمة' ? 'upcoming' : (competition.status === 'جارية' ? 'ongoing' : 'finished')}">${competition.status}</span>
+                        </div>
+                        <div class="competition-details">
+                            <p><i class="fas fa-calendar"></i> ${competition.date || ''}</p>
+                            ${competition.location ? `<p><i class="fas fa-map-marker-alt"></i> ${competition.location}</p>` : ''}
+                            ${competition.description ? `<p>${competition.description.substring(0, 80)}...</p>` : ''}
+                        </div>
+                        <div class="competition-btn">عرض التفاصيل</div>
+                    </div>
+                `).join('');
+
+            } catch (error) {
+                console.error(error);
+                container.innerHTML = `
+                    <div class="competition-card" style="text-align: center; padding: 40px 20px;">
+                        <i class="fas fa-exclamation-triangle" style="font-size: 3rem; color: #ff9800; margin-bottom: 15px;"></i>
+                        <p style="color: var(--text);">حدث خطأ في تحميل المسابقات</p>
+                    </div>
+                `;
+            }
+        }
+
+        // التحقق من حالة تسجيل الدخول
+        function checkLoginStatus() {
+            const studentData = localStorage.getItem('currentStudent');
+            if (studentData) {
+                try {
+                    currentStudent = JSON.parse(studentData);
+                    updateUIForLoggedInUser();
+                } catch (error) {
+                    console.error('Error parsing student data:', error);
+                    localStorage.removeItem('currentStudent');
+                }
+            } else {
+                document.getElementById('loginForm').style.display = 'block';
+                document.getElementById('studentInfo').style.display = 'none';
+                document.getElementById('loggedInButtons').style.display = 'none';
+                document.getElementById('loginTitle').textContent = 'تسجيل دخول الطالب';
+                const welcomeText = document.getElementById('welcomeText');
+                welcomeText.style.display = 'none';
+            }
+        }
+
+        // تحديث واجهة المستخدم للمستخدم المسجل
+        function updateUIForLoggedInUser() {
+            if (currentStudent) {
+                document.getElementById('loginTitle').textContent = 'مرحباً بك';
+                document.getElementById('loginForm').style.display = 'none';
+                document.getElementById('studentInfo').style.display = 'block';
+                document.getElementById('loggedInButtons').style.display = 'grid';
+                
+                document.getElementById('studentNameDisplay').textContent = currentStudent.name || 'غير معروف';
+                document.getElementById('studentCodeDisplay').textContent = currentStudent.code || 'غير معروف';
+                document.getElementById('studentLevelDisplay').textContent = currentStudent.overallLevel || 'غير محدد';
+                
+                const now = new Date();
+                const lastLogin = currentStudent.lastLogin ? new Date(currentStudent.lastLogin) : now;
+                const timeDiff = Math.abs(now - lastLogin);
+                const daysDiff = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
+                
+                let lastLoginText = 'اليوم';
+                if (daysDiff === 1) lastLoginText = 'أمس';
+                else if (daysDiff > 1 && daysDiff < 7) lastLoginText = `منذ ${daysDiff} أيام`;
+                else if (daysDiff >= 7) lastLoginText = `منذ ${Math.floor(daysDiff / 7)} أسابيع`;
+                
+                document.getElementById('lastLoginDisplay').textContent = lastLoginText;
+                
+                const welcomeText = document.getElementById('welcomeText');
+                const studentName = currentStudent.name ? currentStudent.name.split(' ')[0] : 'طالب';
+                welcomeText.textContent = `مرحباً ${studentName}`;
+                welcomeText.style.display = 'block';
+                
+                if (!currentStudent.lastLogin) {
+                    currentStudent.lastLogin = new Date().toISOString();
+                    localStorage.setItem('currentStudent', JSON.stringify(currentStudent));
+                }
+            }
+        }
+
+        // تسجيل الدخول
+        async function handleLogin() {
+            const code = document.getElementById('studentCode').value.trim();
+            const messageDiv = document.getElementById('loginMessage');
+            const loadingDiv = document.getElementById('loginLoading');
+
+            if (!code || code.length !== 6 || !/^\d+$/.test(code)) {
+                showMessage(messageDiv, '⚠️ الرجاء إدخال كود صحيح مكون من 6 أرقام', 'error');
+                return;
+            }
+
+            try {
+                loadingDiv.style.display = 'block';
+                document.getElementById('loginBtn').disabled = true;
+                document.getElementById('loginBtn').innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري الدخول...';
+
+                const q = query(collection(db, "students"), where("code", "==", code));
+                const snapshot = await getDocs(q);
+                
+                if (snapshot.empty) {
+                    throw new Error('كود الدخول غير صحيح');
+                }
+                
+                const studentDoc = snapshot.docs[0];
+                currentStudent = { id: studentDoc.id, ...studentDoc.data() };
+                currentStudent.lastLogin = new Date().toISOString();
+                localStorage.setItem('currentStudent', JSON.stringify(currentStudent));
+                
+                showMessage(messageDiv, '✅ تم تسجيل الدخول بنجاح', 'success');
+                updateUIForLoggedInUser();
+
+            } catch (error) {
+                showMessage(messageDiv, `❌ ${error.message}`, 'error');
+                document.getElementById('loginBtn').innerHTML = '<i class="fas fa-sign-in-alt"></i> دخول';
+            } finally {
+                loadingDiv.style.display = 'none';
+                document.getElementById('loginBtn').disabled = false;
+            }
+        }
+
+        // تسجيل الخروج
+        function handleLogout() {
+            if (confirm('هل تريد تسجيل الخروج؟')) {
+                localStorage.removeItem('currentStudent');
+                currentStudent = null;
+                
+                document.getElementById('loginTitle').textContent = 'تسجيل دخول الطالب';
+                document.getElementById('loginForm').style.display = 'block';
+                document.getElementById('studentInfo').style.display = 'none';
+                document.getElementById('loggedInButtons').style.display = 'none';
+                document.getElementById('studentCode').value = '';
+                
+                const welcomeText = document.getElementById('welcomeText');
+                welcomeText.style.display = 'none';
+                
+                const messageDiv = document.getElementById('loginMessage');
+                showMessage(messageDiv, '✅ تم تسجيل الخروج بنجاح', 'success');
+            }
+        }
+
+        // الذهاب للصفحة الشخصية
+        function goToProfile() {
+            if (currentStudent) {
+                window.location.href = 'student.html';
+            }
+        }
+
+        // إظهار قسم معين
+        window.showSection = function(sectionId) {
+            document.querySelectorAll('.section').forEach(section => {
+                section.classList.remove('active');
+            });
+            document.getElementById(sectionId).classList.add('active');
+            
+            // تحديث القائمة النشطة
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            const activeNav = document.querySelector(`.nav-item[onclick*="showSection('${sectionId}')"]`);
+            if (activeNav) activeNav.classList.add('active');
+            
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        };
+
+        // إغلاق الإعلان
+        function closeAnnouncement() {
+            const banner = document.getElementById('announcementBanner');
+            banner.style.display = 'none';
+            localStorage.setItem('announcementHidden', 'true');
+        }
+
+        // فتح التطبيق الخارجي
+        window.openExternalApp = function() {
+            window.open('https://app3556480-zxv.en.uptodown.com/android', '_blank');
+            closeAnnouncement();
+            return false;
+        };
+
+        // إرسال رسالة اتصل بنا
+        async function sendContactMessage() {
+            const name = document.getElementById('contactName').value.trim();
+            const email = document.getElementById('contactEmail').value.trim();
+            const message = document.getElementById('contactMessage').value.trim();
+            const statusDiv = document.getElementById('contactMessageStatus');
+
+            if (!name || !email || !message) {
+                showMessage(statusDiv, '⚠️ الرجاء ملء جميع الحقول', 'error');
+                return;
+            }
+
+            if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                showMessage(statusDiv, '⚠️ الرجاء إدخال بريد إلكتروني صحيح', 'error');
+                return;
+            }
+
+            try {
+                const contactBtn = document.getElementById('sendMessageBtn');
+                const originalText = contactBtn.innerHTML;
+                contactBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري الإرسال...';
+                contactBtn.disabled = true;
+
+                await new Promise(resolve => setTimeout(resolve, 1500));
+
+                let messages = JSON.parse(localStorage.getItem('contactMessages') || '[]');
+                messages.push({ name, email, message, date: new Date().toISOString() });
+                localStorage.setItem('contactMessages', JSON.stringify(messages));
+
+                showMessage(statusDiv, '✅ تم إرسال رسالتك بنجاح، سنتواصل معك قريباً', 'success');
+                
+                document.getElementById('contactName').value = '';
+                document.getElementById('contactEmail').value = '';
+                document.getElementById('contactMessage').value = '';
+
+                contactBtn.innerHTML = originalText;
+                contactBtn.disabled = false;
+
+            } catch (error) {
+                showMessage(statusDiv, '❌ حدث خطأ أثناء إرسال الرسالة', 'error');
+                document.getElementById('sendMessageBtn').innerHTML = '<i class="fas fa-paper-plane"></i> إرسال الرسالة';
+                document.getElementById('sendMessageBtn').disabled = false;
+            }
+        }
+
+        // إظهار رسالة
+        function showMessage(element, text, type) {
+            element.textContent = text;
+            element.className = `message ${type}`;
+            element.style.display = 'block';
+            setTimeout(() => {
+                element.style.display = 'none';
+            }, 5000);
+        }
+
+        // التعامل مع التمرير
+        function handleScroll() {
+            const scrollTopBtn = document.querySelector('.scroll-top');
+            if (window.scrollY > 300) {
+                scrollTopBtn.classList.add('show');
+            } else {
+                scrollTopBtn.classList.remove('show');
+            }
+        }
+
+        // التمرير للأعلى
+        function scrollToTop() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // إعداد الإعلان
+        function setupAnnouncement() {
+            const announcementHidden = localStorage.getItem('announcementHidden');
+            if (!announcementHidden) {
+                setTimeout(() => {
+                    const banner = document.getElementById('announcementBanner');
+                    if (banner) banner.style.display = 'block';
+                }, 3000);
+            }
+        }
+
+        // ربط الأحداث
+        document.getElementById('loginBtn').addEventListener('click', handleLogin);
+        document.getElementById('logoutBtn').addEventListener('click', handleLogout);
+        document.getElementById('profileBtn').addEventListener('click', goToProfile);
+        document.getElementById('sendMessageBtn').addEventListener('click', sendContactMessage);
+        document.getElementById('studentCode').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') handleLogin();
+        });
+        window.addEventListener('scroll', handleScroll);
+
+        // تحميل البيانات
+        loadAchievements();
+        loadCompetitions();
+        checkLoginStatus();
+        setupAnnouncement();
+    </script>
+</body>
+  </html>
