@@ -1916,3 +1916,216 @@ body {
     font-weight: 700;
     color: var(--text-light);
 }
+
+
+/* إضافة إلى نهاية ملف style.css */
+
+/* ===== تنسيقات التسميع ===== */
+
+/* إحصائيات التسميع */
+.memorization-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin: 15px 0;
+}
+
+.memorization-stats .stat-box {
+    background: var(--white);
+    border-radius: var(--radius-sm);
+    padding: 12px;
+    text-align: center;
+    box-shadow: var(--shadow);
+    border: 1px solid rgba(255, 255, 255, 0.8);
+}
+
+.memorization-stats .stat-box .num {
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: var(--primary-dark);
+}
+
+.memorization-stats .stat-box .label {
+    font-size: 0.7rem;
+    color: var(--text-light);
+    font-weight: 600;
+}
+
+/* سجل التسميع (Timeline) */
+.memorization-timeline {
+    margin-top: 15px;
+}
+
+.memorization-timeline .timeline-item {
+    display: flex;
+    gap: 15px;
+    padding: 14px 0;
+    border-bottom: 1px solid #f0f2f5;
+    position: relative;
+    transition: var(--transition-smooth);
+}
+
+.memorization-timeline .timeline-item:hover {
+    background: #f8fafc;
+    margin: 0 -10px;
+    padding: 14px 10px;
+    border-radius: var(--radius-sm);
+}
+
+.memorization-timeline .timeline-item::before {
+    content: '';
+    position: absolute;
+    right: 5px;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: #e8ecf0;
+}
+
+.memorization-timeline .timeline-item:last-child::before {
+    display: none;
+}
+
+.memorization-timeline .timeline-dot {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: var(--primary);
+    flex-shrink: 0;
+    margin-top: 4px;
+    border: 2px solid var(--white);
+    box-shadow: 0 0 0 2px var(--primary);
+    transition: var(--transition-smooth);
+}
+
+.memorization-timeline .timeline-dot.excellent {
+    background: #4caf50;
+    box-shadow: 0 0 0 2px #4caf50;
+}
+
+.memorization-timeline .timeline-dot.good {
+    background: #ff9800;
+    box-shadow: 0 0 0 2px #ff9800;
+}
+
+.memorization-timeline .timeline-dot.needs-improvement {
+    background: #f44336;
+    box-shadow: 0 0 0 2px #f44336;
+}
+
+.memorization-timeline .timeline-content {
+    flex: 1;
+}
+
+.memorization-timeline .timeline-content .title {
+    font-weight: 700;
+    color: var(--primary-dark);
+    font-size: 0.95rem;
+}
+
+.memorization-timeline .timeline-content .meta {
+    font-size: 0.8rem;
+    color: var(--text-light);
+    margin-top: 2px;
+}
+
+.memorization-timeline .timeline-content .score {
+    font-weight: 800;
+    color: var(--primary);
+    font-size: 1.1rem;
+    margin-top: 4px;
+}
+
+.memorization-timeline .timeline-content .evals {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-top: 4px;
+}
+
+.memorization-timeline .timeline-content .evals .tag {
+    padding: 2px 10px;
+    border-radius: 12px;
+    font-size: 0.65rem;
+    font-weight: 600;
+}
+
+.tag-error { background: #ffcdd2; color: #c62828; }
+.tag-warning { background: #fff3e0; color: #e65100; }
+.tag-tajweed { background: #bbdefb; color: #0d47a1; }
+.tag-hesitation { background: #e1bee7; color: #4a148c; }
+.tag-fluency { background: #c8e6c9; color: #1b5e20; }
+
+/* زر عرض التسميع */
+.toggle-memorization-btn {
+    display: inline-block;
+    margin-top: 8px;
+    color: var(--primary-dark);
+    font-weight: 700;
+    font-size: 0.8rem;
+    cursor: pointer;
+    user-select: none;
+    padding: 8px 18px;
+    background: #e3f2fd;
+    border-radius: 20px;
+    transition: var(--transition-smooth);
+    border: 1px solid rgba(0, 0, 0, 0.04);
+}
+
+.toggle-memorization-btn:hover {
+    background: #bbdefb;
+    transform: translateY(-2px);
+    box-shadow: var(--shadow);
+}
+
+/* ===== تحسينات استجابة ===== */
+@media (max-width: 600px) {
+    .memorization-stats {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 8px;
+    }
+    
+    .memorization-stats .stat-box {
+        padding: 10px 8px;
+    }
+    
+    .memorization-stats .stat-box .num {
+        font-size: 1.2rem;
+    }
+    
+    .memorization-timeline .timeline-item {
+        padding: 10px 0;
+    }
+    
+    .memorization-timeline .timeline-item:hover {
+        padding: 10px 8px;
+    }
+    
+    .memorization-timeline .timeline-content .title {
+        font-size: 0.85rem;
+    }
+    
+    .memorization-timeline .timeline-content .meta {
+        font-size: 0.7rem;
+    }
+    
+    .toggle-memorization-btn {
+        font-size: 0.7rem;
+        padding: 6px 14px;
+    }
+}
+
+@media (max-width: 400px) {
+    .memorization-stats {
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 6px;
+    }
+    
+    .memorization-stats .stat-box .num {
+        font-size: 1rem;
+    }
+    
+    .memorization-stats .stat-box .label {
+        font-size: 0.6rem;
+    }
+}
