@@ -76,18 +76,25 @@
     </nav>
 
     <script type="module">
-        import { db, collection, getDocs, query, orderBy, updateDoc, doc, arrayUnion } from '../firebase-config.js';
+        import { db, collection, getDocs, updateDoc, doc, arrayUnion } from '../firebase-config.js';
 
         let achievements = [];
         let currentAchievement = null;
+
+        function timeOf(value) {
+            if (!value) return 0;
+            if (typeof value.toMillis === 'function') return value.toMillis();
+            const t = new Date(value).getTime();
+            return isNaN(t) ? 0 : t;
+        }
 
         // تحميل الإنجازات
         async function loadAchievements() {
             const container = document.getElementById('achievementsList');
             try {
-                const q = query(collection(db, "achievements"), orderBy("createdAt", "desc"));
-                const snapshot = await getDocs(q);
+                const snapshot = await getDocs(collection(db, "achievements"));
                 achievements = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                achievements.sort((a, b) => (timeOf(b.createdAt) || 0) - (timeOf(a.createdAt) || 0));
                 
                 if (achievements.length === 0) {
                     container.innerHTML = '<div class="card" style="text-align: center;">لا توجد إنجازات حالياً</div>';
@@ -205,7 +212,7 @@
             document.getElementById('commentName').value = '';
             document.getElementById('commentText').value = '';
             
-            loadAchievements();
+            await loadAchievements();
             openAchievement(currentAchievement.id);
         });
 
