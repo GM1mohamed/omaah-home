@@ -209,6 +209,7 @@
         .grade-very-good { background: #b3e5fc; color: #0d47a1; }
         .grade-good { background: #fff9c4; color: #f57f17; }
         .grade-retry { background: #ffcdd2; color: #c62828; }
+        .mem-grade { display: inline-block; padding: 2px 12px; border-radius: 12px; font-weight: 700; font-size: 0.8rem; }
         .review-session-card .students-list {
             display: flex;
             flex-wrap: wrap;
@@ -461,13 +462,20 @@
     </nav>
 
     <script type="module">
-        import { db, collection, query, where, getDocs, doc, getDoc, updateDoc, onSnapshot, SITE_SETTINGS_REF, orderBy } from './firebase-config.js';
+        import { db, collection, query, where, getDocs, doc, getDoc, updateDoc, onSnapshot, SITE_SETTINGS_REF } from './firebase-config.js';
 
         let currentStudent = null;
         let siteClosed = false;
         let allStudentSessions = [];
         let allStudentsMap = {};
         let showAllMemorizations = false;
+
+        function timeOf(value) {
+            if (!value) return 0;
+            if (typeof value.toMillis === 'function') return value.toMillis();
+            const t = new Date(value).getTime();
+            return isNaN(t) ? 0 : t;
+        }
 
         // ========== التحقق من حالة الموقع ==========
         function watchSiteStatus() {
@@ -560,9 +568,9 @@
                     allStudentsMap[doc.id] = doc.data().name;
                 });
 
-                const q = query(collection(db, "recitation_sessions"), orderBy("createdAt", "desc"));
-                const snapshot = await getDocs(q);
+                const snapshot = await getDocs(collection(db, "recitation_sessions"));
                 const allSessions = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+                allSessions.sort((a, b) => (timeOf(b.createdAt) || 0) - (timeOf(a.createdAt) || 0));
                 
                 allStudentSessions = allSessions.filter(session => 
                     session.students && session.students.includes(studentId)
@@ -726,7 +734,7 @@
                     <div class="timeline-item">
                         <div class="${dotClass}"></div>
                         <div class="timeline-content">
-                            <div class="title">📖 ${m.surah || 'سورة'} - صفحة ${m.pageNumber || ''}</div>
+                            <div class="title">📖 التقدير: <span class="mem-grade ${m.grade === 'ممتاز' ? 'grade-excellent' : m.grade === 'جيد جداً' ? 'grade-very-good' : m.grade === 'جيد' ? 'grade-good' : m.grade === 'إعادة' ? 'grade-retry' : ''}">${m.grade || 'غير محدد'}</span> - صفحة ${m.pageNumber || ''}</div>
                             <div class="meta">
                                 ${m.date || ''}
                                 ${m.teacher ? ` • 👨‍🏫 ${m.teacher}` : ''}
@@ -772,23 +780,17 @@
                 const studentRef = studentDoc.ref;
                 let studentData = studentDoc.data();
 
-                let needsUpdate = false;
-                const updates = {};
-                if (studentData.game_stage === undefined) { updates.game_stage = 0; needsUpdate = true; }
-                if (studentData.game_score === undefined) { updates.game_score = 0; needsUpdate = true; }
-                if (studentData.last_game_answer === undefined) { updates.last_game_answer = null; needsUpdate = true; }
-                if (studentData.current_island === undefined) { updates.current_island = 0; needsUpdate = true; }
-                if (studentData.memorizations === undefined) { updates.memorizations = []; needsUpdate = true; }
-                if (studentData.totalMemorizationScore === undefined) { updates.totalMemorizationScore = 0; needsUpdate = true; }
-                if (studentData.avgMemorizationScore === undefined) { updates.avgMemorizationScore = 0; needsUpdate = true; }
+                const updates = { lastLogin: new Date().toISOString() };
+                if (studentData.game_score === undefined) { updates.game_score = 0; }
+                if (studentData.current_island === undefined) { updates.current_island = 0; }
+                if (studentData.memorizations === undefined) { updates.memorizations = []; }
+                if (studentData.totalMemorizationScore === undefined) { updates.totalMemorizationScore = 0; }
+                if (studentData.avgMemorizationScore === undefined) { updates.avgMemorizationScore = 0; }
 
-                if (needsUpdate) {
-                    await updateDoc(studentRef, updates);
-                    studentData = { ...studentData, ...updates };
-                }
+                await updateDoc(studentRef, updates);
+                studentData = { ...studentData, ...updates };
 
                 currentStudent = { id: studentDoc.id, ...studentData };
-                currentStudent.lastLogin = new Date().toISOString();
                 localStorage.setItem('currentStudent', JSON.stringify(currentStudent));
 
                 messageDiv.style.display = 'none';
@@ -804,6 +806,7 @@
             } finally {
                 loadingDiv.style.display = 'none';
                 document.getElementById('loginBtn').disabled = false;
+                document.getElementById('loginBtn').innerHTML = '<i class="fas fa-sign-in-alt"></i> دخول';
             }
         }
 
